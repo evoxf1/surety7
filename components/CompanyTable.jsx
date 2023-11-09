@@ -32,6 +32,11 @@ const CompanyTable = () => {
     fetchData();
   }, []); // Empty dependency array ensures the effect runs once when the component mounts
 
+  const extractLastFiveChars = (str) => {
+    return str.slice(-5);
+  };
+
+
   return (
     <div className="overflow-x-auto">
       {loading && <div>Loading...</div>}
@@ -51,7 +56,9 @@ const CompanyTable = () => {
           <tbody>
             {companies.map((company, idx) => (
               <tr key={idx} className="bg-gray-100">
-                <td className="py-2 px-4 border-b">{company._id}</td>
+                 <td className="py-2 px-4 border-b">
+                  {extractLastFiveChars(company._id)}
+                </td>
                 <td className="py-2 px-4 border-b">{company.name}</td>
                 <td className="py-2 px-4 border-b">
                   {moment(company.createdAt).format("YYYY-MM-DD")}

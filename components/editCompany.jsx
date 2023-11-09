@@ -1,16 +1,13 @@
-"use client"
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 
-const CompanyForm = () => {
+const CompanyForm = ({ companyId }) => {
   const [formData, setFormData] = useState({
     id: "",
     name: "",
     createdAt: "",
     updatedAt: "",
-    deletedAt: "",
   });
-  
-  const [companies, setCompanies] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -20,18 +17,62 @@ const CompanyForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    // Fetch company data by ID and populate the form fields
+    const fetchCompanyData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/companies/${companyId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch company");
+        }
+        const companyData = await response.json();
+        // Update the form data with the retrieved company data
+        setFormData({
+          id: companyData._id,
+          name: companyData.name,
+          createdAt: companyData.createdAt,
+          updatedAt: companyData.updatedAt,
+        });
+      } catch (error) {
+        console.error("Error fetching company:", error);
+        // Handle the error, display an error message, or perform other actions as needed.
+      }
+    };
+
+    if (companyId) {
+      fetchCompanyData();
+    }
+  }, [companyId]); // Fetch company data when the companyId changes
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add the form data to the companies array
-    setCompanies([...companies, formData]);
-    // Clear the form fields after submission
-    setFormData({
-      id: "",
-      name: "",
-      createdAt: "",
-      updatedAt: "",
-      deletedAt: "",
-    });
+
+    try {
+      // Send a PUT request to update the company name
+      const response = await fetch(
+        `http://localhost:3000/api/companies/${companyId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update company");
+      }
+
+      // Optionally, you can handle success, display a message, or navigate to another page here.
+    } catch (error) {
+      console.error("Error updating company:", error);
+      // Handle the error, display an error message, or perform other actions as needed.
+    }
   };
 
   return (
@@ -40,22 +81,6 @@ const CompanyForm = () => {
         onSubmit={handleSubmit}
         className="max-w-md mx-auto p-4 bg-white rounded shadow"
       >
-        <div className="mb-4">
-          <label
-            htmlFor="id"
-            className="block text-sm font-medium text-gray-600"
-          >
-            ID
-          </label>
-          <input
-            type="text"
-            id="id"
-            name="id"
-            value={formData.id}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded"
-          />
-        </div>
         <div className="mb-4">
           <label
             htmlFor="name"
@@ -68,54 +93,6 @@ const CompanyForm = () => {
             id="name"
             name="name"
             value={formData.name}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="createdAt"
-            className="block text-sm font-medium text-gray-600"
-          >
-            Created At
-          </label>
-          <input
-            type="text"
-            id="createdAt"
-            name="createdAt"
-            value={formData.createdAt}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="updatedAt"
-            className="block text-sm font-medium text-gray-600"
-          >
-            Updated At
-          </label>
-          <input
-            type="text"
-            id="updatedAt"
-            name="updatedAt"
-            value={formData.updatedAt}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="deletedAt"
-            className="block text-sm font-medium text-gray-600"
-          >
-            Deleted At
-          </label>
-          <input
-            type="text"
-            id="deletedAt"
-            name="deletedAt"
-            value={formData.deletedAt}
             onChange={handleInputChange}
             className="mt-1 p-2 w-full border rounded"
           />
