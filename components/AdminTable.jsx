@@ -1,28 +1,65 @@
-const AdminTable = ({ admins }) => {
+"use client";
+import { useState, useEffect } from "react";
+
+const AdminTable = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/admins", {
+          cache: "no-store",
+        });
+        if (!res.ok) {
+          throw new Error("Failed to fetch users");
+        }
+
+        const data = await res.json();
+        setUsers(data.users);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error loading Users:", error);
+        setError("Error loading Users");
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array ensures the effect runs once when the component mounts
+
+  const extractLastFiveChars = (str) => {
+    return str.slice(-5);
+  };
+
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-300">
-        <thead>
-          <tr>
-            <th className="py-2 px-4 border-b">ID</th>
-            <th className="py-2 px-4 border-b">Admin Name</th>
-            <th className="py-2 px-4 border-b">Hashed Password</th>
-            <th className="py-2 px-4 border-b">Created At</th>
-            <th className="py-2 px-4 border-b">Updated At</th>
-            <th className="py-2 px-4 border-b">Deleted At</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr  className='bg-gray-100'>
-              <td className="py-2 px-4 border-b">Admin ID </td>
-              <td className="py-2 px-4 border-b">Admin</td>
-              <td className="py-2 px-4 border-b">*********</td> {/* Placeholder for hashed password */}
-              <td className="py-2 px-4 border-b">Created At</td> {/* Placeholder for created at */}
-              <td className="py-2 px-4 border-b">Updated At</td> {/* Placeholder for updated at */}
-              <td className="py-2 px-4 border-b">Deleted At</td> {/* Placeholder for deleted at */}
+      {loading && <div>Loading...</div>}
+      {error && <div>Error: {error}</div>}
+      {!loading && !error && (
+        <table className="min-w-full bg-white border border-gray-300">
+          <thead>
+            <tr>
+              <th className="py-2 px-4 border-b">ID</th>
+              <th className="py-2 px-4 border-b">User Name</th>
+              <th className="py-2 px-4 border-b">Email</th>
+              {/* Add more user details here as needed */}
             </tr>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user, idx) => (
+              <tr key={idx} className="bg-gray-100">
+                <td className="py-2 px-4 border-b">
+                  {extractLastFiveChars(user._id)}
+                </td>
+                <td className="py-2 px-4 border-b">{user.name}</td>
+                <td className="py-2 px-4 border-b">{user.email}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

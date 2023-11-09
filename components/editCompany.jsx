@@ -9,7 +9,7 @@ const CompanyForm = () => {
     updatedAt: "",
     deletedAt: "",
   });
-
+  
   const [companies, setCompanies] = useState([]);
 
   const handleInputChange = (e) => {

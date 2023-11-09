@@ -2,6 +2,7 @@
 
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export default function UserInfo() {
   const { data: session } = useSession();
@@ -21,6 +22,12 @@ export default function UserInfo() {
         >
           Log Out
         </button>
+       <Link href={'/'}> <button
+          onClick={() => signOut()}
+          className="bg-purple-500 text-white font-bold px-6 py-2 mt-3"
+        >
+          Home
+        </button></Link>
       </div>
     </div>
   );

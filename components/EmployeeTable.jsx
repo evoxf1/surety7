@@ -1,7 +1,8 @@
-'use client'
+"use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import RemoveBtn from "./RemoveBtn";
+import moment from 'moment';
 
 const EmployeeTable = () => {
   const [employees, setEmployees] = useState([]);
@@ -41,41 +42,65 @@ const EmployeeTable = () => {
   }
 
   return (
-    <>
-      {employees.map((emp, idx) => (
-        <table key={idx} className="min-w-full bg-white border border-gray-300">
-          <thead>
+    <div className="min-w-full bg-white border border-gray-300">
+      <table className="min-w-full">
+        <thead>
+          <tr>
+            <th className="py-2 px-4 border-b">ID</th>
+            <th className="py-2 px-4 border-b">NAME</th>
+            <th className="py-2 px-4 border-b">COMPANY ID</th>
+            <th className="py-2 px-4 border-b">Created At</th>
+            <th className="py-2 px-4 border-b">Updated At</th>
+            <th className="py-2 px-4 border-b">Deleted At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading && (
             <tr>
-              <th className="py-2 px-4 border-b">ID</th>
-              <th className="py-2 px-4 border-b">NAME</th>
-              <th className="py-2 px-4 border-b">COMPANY ID</th>
-              <th className="py-2 px-4 border-b">Created At</th>
-              <th className="py-2 px-4 border-b">Updated At</th>
-              <th className="py-2 px-4 border-b">Deleted At</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-gray-100">
-              <td className="py-2 px-4 border-b">{emp.ID}</td>
-              <td className="py-2 px-4 border-b">{emp.name}</td>
-              <td className="py-2 px-4 border-b">{emp.companyID}</td>
-              <td className="py-2 px-4 border-b">hello</td>
-              <td className="py-2 px-4 border-b">hello</td>
-              <td className="py-2 px-4 border-b">hello</td>
-              <td className="py-2 px-4 border-b flex">
-                <RemoveBtn />
-                <Link href={"/editEmployee/123"}>
-                  {" "}
-                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
-                    ✏️
-                  </button>
-                </Link>
+              <td colSpan="6" className="py-2 px-4 text-center">
+                Loading...
               </td>
             </tr>
-          </tbody>
-        </table>
-      ))}
-    </>
+          )}
+
+          {error && (
+            <tr>
+              <td colSpan="6" className="py-2 px-4 text-center text-red-500">
+                Error: {error}
+              </td>
+            </tr>
+          )}
+
+          {!loading &&
+            !error &&
+            employees.map((emp, idx) => (
+              <tr key={idx} className="bg-gray-100">
+                <td className="py-2 px-4 border-b">{emp.ID}</td>
+                <td className="py-2 px-4 border-b">{emp.name}</td>
+                <td className="py-2 px-4 border-b">{emp.companyID}</td>
+                <td className="py-2 px-4 border-b">
+                  {moment(emp.createdAt).format("YYYY-MM-DD")}
+                </td>
+                <td className="py-2 px-4 border-b">
+                  {moment(emp.updatedAt).format("YYYY-MM-DD")}
+                </td>
+                <td className="py-2 px-4 border-b">
+                  {moment(emp.deletedAt).format("YYYY-MM-DD")}
+                </td>
+                <td className="py-2 px-4 border-b flex">
+                  <RemoveBtn />
+                  <Link href={`/editEmployee/${emp.ID}`}>
+                    {" "}
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
+                      ✏️
+                    </button>
+                  </Link>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

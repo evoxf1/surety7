@@ -2,20 +2,27 @@ import connectMongoDB from "@/libs/mongodb";
 import Company from "@/models/company";
 import { NextResponse } from "next/server";
 
-export async function PUT(req, { params }) {
-  const { id } = params;
-
-  const { newID: ID, newName: name } = req.json();
-
+export async function POST(req) {
+  const { ID, name } = await req.json();
   await connectMongoDB();
-  await Company.findByIdAndUpdate(id, { ID, name });
-  return NextResponse.json({ message: "UPDATED" }, { status: 200 });
+
+  await Company.create({
+    ID,
+    name,
+  });
+  return NextResponse.json({ message: "Company Created" }, { status: 201 });
 }
 
-export async function GET(req, { params }) {
-  const { id } = params;
+export async function GET() {
   await connectMongoDB();
 
-  const company = await Company.findOne({ _id: id });
-  return NextResponse.json({ company }, { status: 200 });
+  const companies = await Company.find();
+  return NextResponse.json({ companies });
+}
+
+export async function DELETE(req) {
+  const id = req.nextUrl.searchParams.get("id");
+  await connectMongoDB();
+  await Company.findByIdAndDelete(id);
+  return NextResponse.json({ message: "Company Deleted" }, { status: 200 });
 }
