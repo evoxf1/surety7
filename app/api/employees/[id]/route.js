@@ -1,21 +1,38 @@
-import connectMongoDB from "@/libs/mongodb";
-import Employee from "@/models/employee";
-import { NextResponse } from "next/server";
+// pages/api/employees/[id]/route.js
+import { PrismaClient } from "@prisma/client";
 
-export async function PUT(req, { params }) {
-  const { id } = params;
+const prisma = new PrismaClient();
 
-  const { newID: ID, newName: name, newCompanyID: companyID } = req.json();
+export async function get(req, res) {
+  const { id } = req.query;
 
-  await connectMongoDB();
-  await Employee.findByIdAndUpdate(id, { ID, name, companyID });
-  return NextResponse.json({ message: "UPDATED" }, { status: 200 });
+  try {
+    const employee = await prisma.employee.findOne({
+      where: { ID: parseInt(id, 10) },
+    });
+
+    if (!employee) {
+      res.status(404).json({ message: "Employee not found" });
+    } else {
+      res.status(200).json({ employee });
+    }
+  } catch (error) {
+    console.error("Error fetching employee:", error);
+    res.status(500).json({ message: "Failed to fetch employee" });
+  }
 }
 
-export async function GET(req, { params }) {
-  const { id } = params;
-  await connectMongoDB();
+export async function del(req, res) {
+  const { id } = req.query;
 
-  const employee = await Employee.findOne({ _id: id });
-  return NextResponse.json({ employee }, { status: 200 });
+  try {
+    await prisma.employee.delete({
+      where: { ID: parseInt(id, 10) },
+    });
+
+    res.status(200).json({ message: "Employee Deleted" });
+  } catch (error) {
+    console.error("Error deleting employee:", error);
+    res.status(500).json({ message: "Failed to delete employee" });
+  }
 }

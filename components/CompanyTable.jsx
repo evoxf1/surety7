@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import RemoveBtn from "./RemoveBtn";
 import Link from "next/link";
 import moment from "moment";
 
@@ -32,9 +31,9 @@ const CompanyTable = () => {
     fetchData();
   }, []); // Empty dependency array ensures the effect runs once when the component mounts
 
-  const extractLastFiveChars = (str) => {
-    return str.slice(-5);
-  };
+  // const extractLastFiveChars = (str) => {
+  //   return str.slice(-5);
+  // };
   const handleDelete = async (id) => {
     console.log('working')
     try {
@@ -53,7 +52,7 @@ const CompanyTable = () => {
       console.log(message);
 
       setCompanies((prevCompanies) =>
-        prevCompanies.filter((company) => company._id !== id)
+        prevCompanies.filter((company) => company.ID !== id)
       );
     } catch (error) {
       console.error("Error deleting company:", error);
@@ -80,7 +79,7 @@ const CompanyTable = () => {
             {companies.map((company, idx) => (
               <tr key={idx} className="bg-gray-100">
                 <td className="py-2 px-4 border-b">
-                  {extractLastFiveChars(company._id)}
+                  {company.ID}
                 </td>
                 <td className="py-2 px-4 border-b">{company.name}</td>
                 <td className="py-2 px-4 border-b">
@@ -94,12 +93,12 @@ const CompanyTable = () => {
                 </td>
                 <td className="flex gap-2 py-2 px-4 border-b">
                 <button
-                onClick={() => handleDelete(company._id)}
+                onClick={() => handleDelete(company.ID)}
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
               >
                 🗑️
               </button>
-                  <Link href={`/editCompany/${company._id}`}>
+                  <Link href={`/editCompany/${company.ID}`}>
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
                       ✏️
                     </button>

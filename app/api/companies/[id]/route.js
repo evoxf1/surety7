@@ -1,21 +1,51 @@
-import connectMongoDB from "@/libs/mongodb";
-import Company from "@/models/company";
+import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+
+const prisma = new PrismaClient();
 
 export async function PUT(req, { params }) {
   const { id } = params;
-
   const { newName: name } = req.json();
 
-  await connectMongoDB();
-  await Company.findByIdAndUpdate(id, { name });
-  return NextResponse.json({ message: "UPDATED" }, { status: 200 });
+  try {
+    const updatedCompany = await prisma.company.update({
+      where: {
+        ID: parseInt(id),
+      },
+      data: {
+        name,
+      },
+    });
+
+    return NextResponse.json(
+      { message: "Company Updated", company: updatedCompany },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating company:", error);
+    return NextResponse.json(
+      { message: "Failed to update company" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function GET(req, { params }) {
   const { id } = params;
-  await connectMongoDB();
 
-  const company = await Company.findOne({ _id: id });
-  return NextResponse.json({ company }, { status: 200 });
+  try {
+    const company = await prisma.company.findUnique({
+      where: {
+        ID: parseInt(id),
+      },
+    });
+
+    return NextResponse.json({ company }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching company:", error);
+    return NextResponse.json(
+      { message: "Failed to fetch company" },
+      { status: 500 }
+    );
+  }
 }
