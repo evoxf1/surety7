@@ -31,7 +31,32 @@ const EmployeeTable = () => {
     };
 
     fetchData();
-  }, []); // Empty dependency array ensures the effect runs once when the component mounts
+  }, []); 
+  const handleDelete = async (id) => {
+    console.log('working')
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/employees?id=${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete employee");
+      }
+
+      const { message } = await response.json();
+      console.log(message);
+
+      setEmployees((prevEmployees) =>
+      prevEmployees.filter((employee) => employee._id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+    }
+  };
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -88,7 +113,12 @@ const EmployeeTable = () => {
                   {moment(emp.deletedAt).format("YYYY-MM-DD")}
                 </td>
                 <td className="py-2 px-4 border-b flex">
-                  <RemoveBtn />
+                <button
+                onClick={() => handleDelete(emp._id)}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+              >
+                🗑️
+              </button>
                   <Link href={`/editEmployee/${emp.ID}`}>
                     {" "}
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">

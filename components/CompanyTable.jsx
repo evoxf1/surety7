@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import RemoveBtn from "./RemoveBtn";
 import Link from "next/link";
-import moment from 'moment';
+import moment from "moment";
 
 const CompanyTable = () => {
   const [companies, setCompanies] = useState([]);
@@ -35,7 +35,30 @@ const CompanyTable = () => {
   const extractLastFiveChars = (str) => {
     return str.slice(-5);
   };
+  const handleDelete = async (id) => {
+    console.log('working')
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/companies?id=${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
+      if (!response.ok) {
+        throw new Error("Failed to delete company");
+      }
+
+      const { message } = await response.json();
+      console.log(message);
+
+      setCompanies((prevCompanies) =>
+        prevCompanies.filter((company) => company._id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting company:", error);
+    }
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -56,7 +79,7 @@ const CompanyTable = () => {
           <tbody>
             {companies.map((company, idx) => (
               <tr key={idx} className="bg-gray-100">
-                 <td className="py-2 px-4 border-b">
+                <td className="py-2 px-4 border-b">
                   {extractLastFiveChars(company._id)}
                 </td>
                 <td className="py-2 px-4 border-b">{company.name}</td>
@@ -70,7 +93,12 @@ const CompanyTable = () => {
                   {moment(company.deletedAt).format("YYYY-MM-DD")}
                 </td>
                 <td className="flex gap-2 py-2 px-4 border-b">
-                  <RemoveBtn />
+                <button
+                onClick={() => handleDelete(company._id)}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+              >
+                🗑️
+              </button>
                   <Link href={`/editCompany/${company._id}`}>
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
                       ✏️

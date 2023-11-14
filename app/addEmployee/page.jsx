@@ -1,37 +1,75 @@
-"use client"
+'use client'
 import React, { useState } from "react";
 
 const EmployeeForm = () => {
   const [formData, setFormData] = useState({
-    id: "",
+    ID: "",
     name: "",
+    companyID: "", // Assuming companyId for the employee
     createdAt: "",
     updatedAt: "",
     deletedAt: "",
   });
 
-  const [companies, setCompanies] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+  const handleNameChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      name: value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleIdChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      ID: value,
+    }));
+  };
+  
+  const handleCompanyIdChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      companyID: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add the form data to the companies array
-    setCompanies([...companies, formData]);
-    // Clear the form fields after submission
-    setFormData({
-      id: "",
-      name: "",
-      createdAt: "",
-      updatedAt: "",
-      deletedAt: "",
-    });
+
+    try {
+      const response = await fetch("http://localhost:3000/api/employees", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add employee");
+      }
+
+      // Assuming the server responds with the added employee data
+      const addedEmployee = await response.json();
+
+      // Clear the form fields after submission
+      setFormData({
+        ID: "",
+        name: "",
+        companyID: "",
+        createdAt: "",
+        updatedAt: "",
+        deletedAt: "",
+      });
+      setSuccessMessage("Employee added successfully!");
+      console.log("Employee added successfully:", addedEmployee);
+    } catch (error) {
+      console.error("Error adding employee:", error);
+    }
   };
 
   return (
@@ -41,26 +79,20 @@ const EmployeeForm = () => {
         className="max-w-md mx-auto p-4 bg-white rounded shadow"
       >
         <div className="mb-4">
-          <label
-            htmlFor="id"
-            className="block text-sm font-medium text-gray-600"
-          >
+          <label htmlFor="id" className="block text-sm font-medium text-gray-600">
             ID
           </label>
           <input
             type="text"
             id="id"
             name="id"
-            value={formData.id}
-            onChange={handleInputChange}
+            value={formData.ID}
+            onChange={handleIdChange}
             className="mt-1 p-2 w-full border rounded"
           />
         </div>
         <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-600"
-          >
+          <label htmlFor="name" className="block text-sm font-medium text-gray-600">
             Employee Name
           </label>
           <input
@@ -68,78 +100,35 @@ const EmployeeForm = () => {
             id="name"
             name="name"
             value={formData.name}
-            onChange={handleInputChange}
+            onChange={handleNameChange}
             className="mt-1 p-2 w-full border rounded"
           />
         </div>
-        <label
-            htmlFor="id"
-            className="block text-sm font-medium text-gray-600"
-          >
+        <div className="mb-4">
+          <label htmlFor="companyId" className="block text-sm font-medium text-gray-600">
             Company ID
           </label>
           <input
             type="text"
-            id="id"
-            name="id"
-            value={formData.id}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded"
-          />
-        <div className="mb-4">
-          <label
-            htmlFor="createdAt"
-            className="block text-sm font-medium text-gray-600"
-          >
-            Created At
-          </label>
-          <input
-            type="text"
-            id="createdAt"
-            name="createdAt"
-            value={formData.createdAt}
-            onChange={handleInputChange}
+            id="companyId"
+            name="companyId"
+            value={formData.companyID}
+            onChange={handleCompanyIdChange}
             className="mt-1 p-2 w-full border rounded"
           />
         </div>
-        <div className="mb-4">
-          <label
-            htmlFor="updatedAt"
-            className="block text-sm font-medium text-gray-600"
-          >
-            Updated At
-          </label>
-          <input
-            type="text"
-            id="updatedAt"
-            name="updatedAt"
-            value={formData.updatedAt}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="deletedAt"
-            className="block text-sm font-medium text-gray-600"
-          >
-            Deleted At
-          </label>
-          <input
-            type="text"
-            id="deletedAt"
-            name="deletedAt"
-            value={formData.deletedAt}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded"
-          />
-        </div>
+
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          Add Company
+          Add Employee
         </button>
+      {successMessage && (
+        <div className="mt-4 text-green-600 font-semibold">
+          {successMessage}
+        </div>
+      )}
       </form>
     </div>
   );
