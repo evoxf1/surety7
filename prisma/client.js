@@ -4,8 +4,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Use prisma instance to perform database operations
-async function createCompanyWithEmployees() {
+  async function createCompanyWithEmployees() {
   const employees = [{ name: "" }, { name: "" }];
 
   const company = await prisma.company.create({

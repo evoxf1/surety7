@@ -35,7 +35,7 @@ const CompanyTable = () => {
   //   return str.slice(-5);
   // };
   const handleDelete = async (id) => {
-    console.log('working')
+    console.log('working');
     try {
       const response = await fetch(
         `http://localhost:3000/api/companies?id=${id}`,
@@ -43,22 +43,22 @@ const CompanyTable = () => {
           method: "DELETE",
         }
       );
-
+  
       if (!response.ok) {
-        throw new Error("Failed to delete company");
+        throw new Error(`Failed to delete company. Status: ${response.status}`);
       }
-
+  
       const { message } = await response.json();
       console.log(message);
-
+  
       setCompanies((prevCompanies) =>
-        prevCompanies.filter((company) => company.ID !== id)
+        prevCompanies.filter((company) => company.ID !== ID)
       );
     } catch (error) {
       console.error("Error deleting company:", error);
     }
   };
-
+  
   return (
     <div className="overflow-x-auto">
       {loading && <div>Loading...</div>}

@@ -57,22 +57,7 @@ const CompanyForm = () => {
         onSubmit={handleSubmit}
         className="max-w-md mx-auto p-4 bg-white rounded shadow"
       >
-        <div className="mb-4">
-          <label
-            htmlFor="id"
-            className="block text-sm font-medium text-gray-600"
-          >
-            ID
-          </label>
-          <input
-            type="text"
-            id="id"
-            name="id"
-            value={formData.id}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded"
-          />
-        </div>
+      
         <div className="mb-4">
           <label
             htmlFor="name"

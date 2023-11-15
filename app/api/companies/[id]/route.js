@@ -49,3 +49,22 @@ export async function GET(req, { params }) {
     );
   }
 }
+export async function DELETE(req, { params }) {
+  const { id } = params;
+
+  try {
+    const company = await prisma.company.delete({
+      where: {
+        ID: parseInt(id),
+      },
+    });
+
+    return NextResponse.json({ company }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching company:", error);
+    return NextResponse.json(
+      { message: "Failed to fetch company" },
+      { status: 500 }
+    );
+  }
+}

@@ -114,7 +114,7 @@ const EmployeeTable = () => {
                 </td>
                 <td className="py-2 px-4 border-b flex">
                 <button
-                onClick={() => handleDelete(emp._id)}
+                onClick={() => handleDelete(emp.ID)}
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
               >
                 🗑️

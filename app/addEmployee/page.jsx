@@ -21,13 +21,7 @@ const EmployeeForm = () => {
     }));
   };
 
-  const handleIdChange = (e) => {
-    const { value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      ID: value,
-    }));
-  };
+
   
   const handleCompanyIdChange = (e) => {
     const { value } = e.target;
@@ -78,19 +72,7 @@ const EmployeeForm = () => {
         onSubmit={handleSubmit}
         className="max-w-md mx-auto p-4 bg-white rounded shadow"
       >
-        <div className="mb-4">
-          <label htmlFor="id" className="block text-sm font-medium text-gray-600">
-            ID
-          </label>
-          <input
-            type="text"
-            id="id"
-            name="id"
-            value={formData.ID}
-            onChange={handleIdChange}
-            className="mt-1 p-2 w-full border rounded"
-          />
-        </div>
+       
         <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-600">
             Employee Name
@@ -104,6 +86,7 @@ const EmployeeForm = () => {
             className="mt-1 p-2 w-full border rounded"
           />
         </div>
+
         <div className="mb-4">
           <label htmlFor="companyId" className="block text-sm font-medium text-gray-600">
             Company ID
@@ -117,7 +100,15 @@ const EmployeeForm = () => {
             className="mt-1 p-2 w-full border rounded"
           />
         </div>
-
+        <div className="mb-4">
+          <label htmlFor="companyId" className="block text-sm font-medium text-gray-600">
+            Updated at
+          </label>
+          <input
+            type="date"
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

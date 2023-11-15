@@ -41,20 +41,21 @@ export async function GET() {
   }
 }
 
-export async function DELETE(req) {
-  const { id } = req.query;
+export async function DELETE(req, { params }) {
+  const { id } = params;
 
   try {
-    await prisma.company.delete({
-      where: { ID: parseInt(id, 10) },
-      include: { employees: true },
+    const company = await prisma.company.delete({
+      where: {
+        ID: parseInt(id),
+      },
     });
 
-    return NextResponse.json({ message: "Company Deleted" }, { status: 200 });
+    return NextResponse.json({ company }, { status: 200 });
   } catch (error) {
-    console.error("Error deleting company:", error);
+    console.error("Error fetching company:", error);
     return NextResponse.json(
-      { message: "Failed to delete company" },
+      { message: "Failed to fetch company" },
       { status: 500 }
     );
   }

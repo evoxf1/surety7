@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export default async function POST(req) {
+export async function POST(req) {
   const { ID, name, companyID } = req.body;
 
   try {
